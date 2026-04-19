@@ -3,7 +3,7 @@ beneficiario = input('Ingrese el nombre del beneficiario: ')
 codigo = input('Ingrese el codigo: ')
 base = int(input('Ingrese el monto base: '))
 
-
+#Proceso Base
 fijo = 25000
 letra = str(codigo[0])
 numero = int(codigo[1 : 3])
