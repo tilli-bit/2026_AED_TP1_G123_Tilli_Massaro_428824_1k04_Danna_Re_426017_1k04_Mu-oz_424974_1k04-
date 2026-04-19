@@ -1,15 +1,15 @@
-#Incio
+#Entrada de datos
 beneficiario = input('Ingrese el nombre del beneficiario: ')
 codigo = input('Ingrese el codigo: ')
 base = int(input('Ingrese el monto base: '))
 
-#Proceso
+
 fijo = 25000
 letra = str(codigo[0])
 numero = int(codigo[1 : 3])
 especificacion = int(codigo[4])
 
-
+#Asignación de capitulos y monto por letra
 if (letra == 'A' or letra == 'B' or letra == 'C' or  letra == 'D' or letra == 'E' or letra == 'F' or  letra == 'G' or
         letra == 'H' or letra == 'I' or letra == 'J' or letra == 'K' or letra == 'L'):
     monto2 = base + fijo + 25000
