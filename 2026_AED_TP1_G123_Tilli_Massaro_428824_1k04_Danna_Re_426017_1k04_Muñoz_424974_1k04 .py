@@ -65,6 +65,8 @@ elif letra == 'U':
     monto2 = base + fijo + 100000
     monto_final = monto2 + ( monto2 * (especificacion / 100))
     capitulo = "Códigos para propósitos especiales"
+        
+#Salidas
 
 print("Beneficiario:", beneficiario)
 print("Codigo:", codigo)
