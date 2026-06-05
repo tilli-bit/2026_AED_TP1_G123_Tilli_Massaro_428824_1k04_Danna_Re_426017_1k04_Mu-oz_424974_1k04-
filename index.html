@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyDigest</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     ONBOARDING TUTORIAL
+════════════════════════════════════════════════════ -->
+<div class="ob-overlay" id="ob-overlay">
+  <div class="ob-card" id="ob-card">
+
+    <!-- progress dots -->
+    <div class="ob-dots" id="ob-dots"></div>
+
+    <!-- steps -->
+    <div class="ob-steps" id="ob-steps">
+
+      <div class="ob-step active" data-step="0">
+        <div class="ob-emoji">👋</div>
+        <h2 class="ob-title">Bienvenido a MyDigest</h2>
+        <p class="ob-text">Tu espacio personal para guardar contenido y convertirlo en podcasts, resúmenes o presentaciones con un solo clic.<br><br>Este tutorial rápido te muestra cómo funciona todo.</p>
+      </div>
+
+      <div class="ob-step" data-step="1">
+        <div class="ob-emoji">📂</div>
+        <h2 class="ob-title">Subí cualquier archivo</h2>
+        <p class="ob-text">Arrastrá o seleccioná archivos: <strong>PDFs, audios MP3, planillas Excel, texto, emails</strong> y más.<br><br>La app extrae el texto automáticamente para que puedas procesarlo después.</p>
+      </div>
+
+      <div class="ob-step" data-step="2">
+        <div class="ob-emoji">🎤</div>
+        <h2 class="ob-title">Grabá notas de voz</h2>
+        <p class="ob-text">Usá el tab <strong>"Nota de voz"</strong> para grabar directamente desde el micrófono, como si fuera un mensaje de WhatsApp.<br><br>La app lo transcribe y guarda automáticamente.</p>
+      </div>
+
+      <div class="ob-step" data-step="3">
+        <div class="ob-emoji">🏷</div>
+        <h2 class="ob-title">Grupos y fechas</h2>
+        <p class="ob-text">Al subir un archivo o grabar una nota, podés asignarle una <strong>fecha</strong> y un <strong>grupo</strong> (Escuela, Trabajo, Personal, etc.).<br><br>Así organizás todo y filtrás fácilmente.</p>
+      </div>
+
+      <div class="ob-step" data-step="4">
+        <div class="ob-emoji">✨</div>
+        <h2 class="ob-title">Generá en segundos</h2>
+        <p class="ob-text">Seleccioná los ítems que querés incluir con el checkbox, elegí el formato de salida y tocá <strong>Generar</strong>:<br><br>🎙 <strong>Podcast</strong> · 📄 <strong>Resumen</strong> · 🖼 <strong>Diapositivas</strong></p>
+      </div>
+
+      <div class="ob-step" data-step="5">
+        <div class="ob-emoji">📅</div>
+        <h2 class="ob-title">Calendario y recordatorios</h2>
+        <p class="ob-text">En la sección <strong>Calendario</strong> podés crear eventos con título, descripción y propiedades personalizadas.<br><br>Activá notificaciones para que te avise cuando se acerca una fecha importante.</p>
+      </div>
+
+      <div class="ob-step" data-step="6">
+        <div class="ob-emoji">🚀</div>
+        <h2 class="ob-title">¡Todo listo!</h2>
+        <p class="ob-text">Ya sabés cómo funciona MyDigest.<br>Podés volver a ver este tutorial desde el menú cuando quieras.<br><br>¡Empezá subiendo tu primer archivo!</p>
+      </div>
+
+    </div><!-- /ob-steps -->
+
+    <div class="ob-actions">
+      <button class="ob-skip"  onclick="skipTutorial()">Omitir introducción</button>
+      <div class="ob-nav">
+        <button class="ob-prev" id="ob-prev" onclick="obPrev()">← Anterior</button>
+        <button class="ob-next" id="ob-next" onclick="obNext()">Siguiente →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     HEADER
+════════════════════════════════════════════════════ -->
+<header>
+  <div class="header-left">
+    <div class="logo-mark">🎙</div>
+    <div>
+      <div class="logo-text">MyDigest</div>
+      <div class="logo-sub">Tu resumen en audio, texto o slides</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-section="digest"    onclick="showSection('digest')">📦 Contenido</button>
+      <button class="nav-tab"        data-section="calendar"  onclick="showSection('calendar')">📅 Calendario</button>
+    </div>
+    <select id="group-filter" class="select-pill" onchange="filterByGroup(this.value)">
+      <option value="">Todos los grupos</option>
+    </select>
+    <button class="icon-btn" id="theme-toggle" title="Cambiar tema" onclick="toggleTheme()">
+      <span id="theme-icon">☀️</span>
+    </button>
+    <button class="icon-btn" title="Ver tutorial" onclick="openTutorial()">❓</button>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════
+     MAIN PAGE
+════════════════════════════════════════════════════ -->
+<div class="page">
+
+  <!-- ══════════════ DIGEST SECTION ══════════════ -->
+  <div id="section-digest">
+
+    <!-- Upload card -->
+    <div class="card" id="tut-upload">
+      <div class="card-label">Agregar contenido</div>
+      <div class="tab-row">
+        <button class="tab active" data-tab="file"  onclick="switchTab('file')">📎 Archivos</button>
+        <button class="tab"        data-tab="voice" onclick="switchTab('voice')">🎤 Nota de voz</button>
+      </div>
+
+      <!-- File tab -->
+      <div id="tab-file" class="tab-content">
+        <div class="drop-zone" id="drop-zone">
+          <input type="file" id="file-input" multiple
+            accept=".pdf,.mp3,.wav,.m4a,.xlsx,.xls,.csv,.txt,.md,.eml" />
+          <div class="drop-icon">📂</div>
+          <div class="drop-title">Arrastrá o <span class="link" onclick="document.getElementById('file-input').click()">seleccioná archivos</span></div>
+          <div class="drop-hint">PDF · MP3 / WAV / M4A · XLSX · CSV · TXT · MD · EML</div>
+        </div>
+      </div>
+
+      <!-- Voice tab -->
+      <div id="tab-voice" class="tab-content hidden">
+        <div class="voice-recorder">
+          <div class="waveform" id="waveform">
+            <div class="wave-bars" id="wave-bars">
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="rec-timer" id="rec-timer">0:00</div>
+          </div>
+          <div class="rec-controls">
+            <button class="rec-btn" id="rec-btn" onclick="toggleRecording()">
+              <span id="rec-icon">🎤</span>
+            </button>
+            <div class="rec-hint" id="rec-hint">Tocá para grabar</div>
+            <button class="send-btn hidden" id="send-btn" onclick="sendVoiceMemo()">Enviar ▶</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metadata form -->
+      <div class="meta-form hidden" id="meta-form">
+        <div class="meta-row">
+          <label class="meta-label">📅 Fecha del contenido</label>
+          <input type="date" id="meta-date" class="meta-input" />
+        </div>
+        <div class="meta-row">
+          <label class="meta-label">🏷 Grupo</label>
+          <div class="group-chips" id="group-chips-input"></div>
+        </div>
+        <div class="meta-actions">
+          <button class="btn-cancel"  onclick="cancelUpload()">Cancelar</button>
+          <button class="btn-confirm" id="confirm-btn" onclick="confirmUpload()">Guardar</button>
+        </div>
+      </div>
+
+      <div class="upload-bar hidden" id="upload-bar">
+        <div class="spinner sm"></div>
+        <span id="upload-status">Procesando…</span>
+      </div>
+    </div>
+
+    <!-- Items card -->
+    <div class="card" id="tut-items">
+      <div class="section-bar">
+        <div class="card-label" style="margin-bottom:0">Contenido guardado</div>
+        <div class="row-gap-6">
+          <button class="btn-pill" onclick="toggleAll(true)">Todos</button>
+          <button class="btn-pill" onclick="toggleAll(false)">Ninguno</button>
+        </div>
+      </div>
+      <div id="items-list">
+        <div class="empty"><span class="empty-icon">🗂</span>Aún no hay contenido guardado.</div>
+      </div>
+    </div>
+
+    <!-- Generate card -->
+    <div class="card generate-card" id="tut-generate">
+      <div class="card-label">Generar a partir del contenido seleccionado</div>
+      <div class="gen-options">
+        <label class="gen-option" data-tipo="podcast">
+          <input type="radio" name="gen-tipo" value="podcast" checked />
+          <div class="gen-box">
+            <div class="gen-icon">🎙</div>
+            <div class="gen-name">Podcast</div>
+            <div class="gen-desc">Audio narrado ~20 min</div>
+          </div>
+        </label>
+        <label class="gen-option" data-tipo="resumen">
+          <input type="radio" name="gen-tipo" value="resumen" />
+          <div class="gen-box">
+            <div class="gen-icon">📄</div>
+            <div class="gen-name">Resumen</div>
+            <div class="gen-desc">Texto estructurado</div>
+          </div>
+        </label>
+        <label class="gen-option" data-tipo="diapositivas">
+          <input type="radio" name="gen-tipo" value="diapositivas" />
+          <div class="gen-box">
+            <div class="gen-icon">🖼</div>
+            <div class="gen-name">Diapositivas</div>
+            <div class="gen-desc">Presentación lista</div>
+          </div>
+        </label>
+      </div>
+      <button class="btn-gen" id="gen-btn" onclick="generate()">
+        <span id="gen-btn-icon">✨</span>
+        <span id="gen-btn-label">Generar</span>
+      </button>
+      <div class="gen-hint" id="gen-hint">Seleccioná los ítems y el tipo de salida.</div>
+    </div>
+
+    <!-- Outputs card -->
+    <div class="card">
+      <div class="card-label">Generaciones anteriores</div>
+      <div id="outputs-list">
+        <div class="empty"><span class="empty-icon">🎧</span>Aún no generaste nada.</div>
+      </div>
+    </div>
+
+  </div><!-- /section-digest -->
+
+  <!-- ══════════════ CALENDAR SECTION ══════════════ -->
+  <div id="section-calendar" class="hidden">
+
+    <!-- Notification banner -->
+    <div class="notif-banner hidden" id="notif-banner">
+      <span>🔔 Activá notificaciones para recibir recordatorios de tus eventos</span>
+      <button class="notif-allow-btn" onclick="requestNotifPermission()">Activar</button>
+      <button class="icon-btn" style="width:26px;height:26px;font-size:12px" onclick="document.getElementById('notif-banner').classList.add('hidden')">✕</button>
+    </div>
+
+    <div class="cal-layout">
+
+      <!-- Left: mini calendar -->
+      <div class="card cal-card">
+        <div class="cal-header">
+          <button class="cal-nav-btn" onclick="calPrev()">‹</button>
+          <span class="cal-month-label" id="cal-month-label"></span>
+          <button class="cal-nav-btn" onclick="calNext()">›</button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+        <button class="btn-new-event" onclick="openEventModal()">+ Nuevo evento</button>
+      </div>
+
+      <!-- Right: event list for selected day -->
+      <div class="card cal-events-card">
+        <div class="cal-events-header">
+          <div class="card-label" style="margin-bottom:0" id="cal-day-label">Próximos eventos</div>
+          <button class="btn-pill" onclick="openEventModal()">+ Agregar</button>
+        </div>
+        <div id="cal-events-list">
+          <div class="empty"><span class="empty-icon">📅</span>No hay eventos para este día.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Upcoming events strip -->
+    <div class="card">
+      <div class="card-label">Próximos eventos</div>
+      <div id="upcoming-list">
+        <div class="empty"><span class="empty-icon">⏰</span>Sin eventos próximos.</div>
+      </div>
+    </div>
+
+  </div><!-- /section-calendar -->
+
+</div><!-- /page -->
+
+<!-- ═══════════════════════════════════════════════════
+     MODALS
+════════════════════════════════════════════════════ -->
+
+<!-- Event create/edit modal -->
+<div class="modal-overlay hidden" id="event-modal">
+  <div class="event-modal">
+    <div class="slide-modal-header">
+      <span id="event-modal-title">Nuevo evento</span>
+      <button class="icon-btn" onclick="closeEventModal()">✕</button>
+    </div>
+    <div class="event-modal-body">
+
+      <div class="ef-row">
+        <label class="ef-label">Título *</label>
+        <input type="text" id="ef-titulo" class="meta-input" placeholder="Ej. Entrega del proyecto" />
+      </div>
+
+      <div class="ef-row">
+        <label class="ef-label">Descripción</label>
+        <textarea id="ef-desc" class="meta-input ef-textarea" placeholder="Detalles del evento…"></textarea>
+      </div>
+
+      <div class="ef-cols">
+        <div class="ef-row">
+          <label class="ef-label">📅 Fecha *</label>
+          <input type="date" id="ef-fecha" class="meta-input" />
+        </div>
+        <div class="ef-row">
+          <label class="ef-label">⏰ Hora</label>
+          <input type="time" id="ef-hora" class="meta-input" />
+        </div>
+      </div>
+
+      <div class="ef-row">
+        <label class="ef-label">🎨 Color</label>
+        <div class="color-swatches" id="color-swatches">
+          <button class="swatch selected" data-color="#8b7cf6" style="background:#8b7cf6" onclick="selectColor('#8b7cf6',this)"></button>
+          <button class="swatch" data-color="#ec4899" style="background:#ec4899" onclick="selectColor('#ec4899',this)"></button>
+          <button class="swatch" data-color="#f59e0b" style="background:#f59e0b" onclick="selectColor('#f59e0b',this)"></button>
+          <button class="swatch" data-color="#10b981" style="background:#10b981" onclick="selectColor('#10b981',this)"></button>
+          <button class="swatch" data-color="#3b82f6" style="background:#3b82f6" onclick="selectColor('#3b82f6',this)"></button>
+          <button class="swatch" data-color="#ef4444" style="background:#ef4444" onclick="selectColor('#ef4444',this)"></button>
+        </div>
+      </div>
+
+      <div class="ef-row">
+        <label class="ef-label">🔔 Notificarme</label>
+        <select id="ef-notif" class="meta-input">
+          <option value="">Sin recordatorio</option>
+          <option value="15">15 minutos antes</option>
+          <option value="60">1 hora antes</option>
+          <option value="1440">1 día antes</option>
+          <option value="10080">1 semana antes</option>
+        </select>
+      </div>
+
+      <!-- Custom properties -->
+      <div class="ef-row">
+        <div class="ef-label-row">
+          <label class="ef-label">⚙️ Propiedades personalizadas</label>
+          <button class="btn-pill" onclick="addProperty()">+ Agregar</button>
+        </div>
+        <div id="props-list" class="props-list"></div>
+      </div>
+
+    </div>
+    <div class="event-modal-footer">
+      <button class="btn-danger hidden" id="ef-delete" onclick="deleteEventFromModal()">Eliminar</button>
+      <div style="flex:1"></div>
+      <button class="btn-cancel" onclick="closeEventModal()">Cancelar</button>
+      <button class="btn-confirm" onclick="saveEvent()">Guardar evento</button>
+    </div>
+  </div>
+</div>
+
+<!-- File viewer modal -->
+<div class="modal-overlay hidden" id="file-modal">
+  <div class="file-modal">
+    <div class="slide-modal-header">
+      <span id="file-modal-title" class="file-modal-title-text"></span>
+      <div style="display:flex;gap:8px;align-items:center">
+        <a id="file-modal-download" class="btn-out" download>⬇ Descargar</a>
+        <button class="icon-btn" onclick="closeFileModal()">✕</button>
+      </div>
+    </div>
+    <div class="file-modal-body" id="file-modal-body"></div>
+  </div>
+</div>
+
+<!-- Slide viewer modal -->
+<div class="modal-overlay hidden" id="slide-modal">
+  <div class="slide-modal">
+    <div class="slide-modal-header">
+      <span id="slide-modal-title">Diapositivas</span>
+      <button class="icon-btn" onclick="closeSlideModal()">✕</button>
+    </div>
+    <div class="slide-viewer" id="slide-viewer"></div>
+    <div class="slide-nav">
+      <button class="slide-nav-btn" onclick="prevSlide()">‹</button>
+      <span id="slide-counter">1 / 1</span>
+      <button class="slide-nav-btn" onclick="nextSlide()">›</button>
+    </div>
+  </div>
+</div>
+
+<!-- Summary modal -->
+<div class="modal-overlay hidden" id="summary-modal">
+  <div class="summary-modal">
+    <div class="slide-modal-header">
+      <span id="summary-modal-title">Resumen</span>
+      <button class="icon-btn" onclick="closeSummaryModal()">✕</button>
+    </div>
+    <div class="summary-body" id="summary-body"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
